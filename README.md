@@ -1,6 +1,6 @@
 # 🚨 Fraud Detection System
 
-A real-time fraud detection system built with Apache Kafka, featuring dual-format messaging (Avro + JSON), stateful stream processing, and a rich terminal-based monitoring UI.
+A fraud detection system built with Apache Kafka, featuring dual-format messaging (Avro + JSON), stateful stream processing, and a rich terminal-based monitoring UI.
 
 ## Author
 **Mahmoud Najmeh**  
