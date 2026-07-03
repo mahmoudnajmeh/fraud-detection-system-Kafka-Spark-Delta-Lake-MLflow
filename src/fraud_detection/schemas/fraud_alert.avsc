@@ -10,7 +10,7 @@
     {"name": "alert_type", "type": {
       "type": "enum",
       "name": "AlertType",
-      "symbols": ["HIGH_AMOUNT", "RAPID_SUCCESSIVE", "UNUSUAL_LOCATION", "RISKY_USER", "PATTERN_MATCH"]
+      "symbols": ["HIGH_AMOUNT", "RAPID_SUCCESSIVE", "UNUSUAL_LOCATION", "RISKY_USER", "PATTERN_MATCH", "ML_FRAUD_PREDICTION"]
     }, "doc": "Type of fraud alert"},
     {"name": "severity", "type": {
       "type": "enum",

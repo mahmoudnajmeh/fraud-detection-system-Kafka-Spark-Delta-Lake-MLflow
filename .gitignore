@@ -36,10 +36,27 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 
-# Application logs and data
+# Application logs and runtime data
 logs/
 failed_messages/
 *.log
+
+# Lakehouse / Delta Lake
+lake/
+delta/
+warehouse/
+checkpoints/
+spark-warehouse/
+metastore_db/
+
+# Spark
+*.crc
+
+# Machine Learning
+models/
+mlruns/
+*.pkl
+*.joblib
 
 # Docker
 *.pid

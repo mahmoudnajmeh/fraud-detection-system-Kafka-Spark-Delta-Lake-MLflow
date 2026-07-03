@@ -20,6 +20,7 @@ from fraud_detection.models.data_models import FraudAlert, Transaction
 from fraud_detection.utils.avro_serializer import AvroSerializer
 from fraud_detection.processors.enrichment_processor import EnrichmentProcessor
 from fraud_detection.processors.fraud_rules_engine import FraudRulesEngine
+from fraud_detection.processors.ml_fraud_predictor import MLFraudPredictor
 
 from delta.tables import DeltaTable
 from pyspark.sql import SparkSession, functions as F
@@ -53,6 +54,7 @@ class FraudDetector:
         
         self.enrichment_processor = EnrichmentProcessor()
         self.rules_engine = FraudRulesEngine()
+        self.ml_predictor = MLFraudPredictor()
         
         self.user_transactions = defaultdict(lambda: deque(maxlen=100))
         self.user_profiles = {}
@@ -156,14 +158,18 @@ class FraudDetector:
                 user_profile = None
             
             with self.state_lock:
+                user_history = list(self.user_transactions[user_id])
                 self.user_transactions[user_id].append({
                     'timestamp': transaction.timestamp,
                     'amount': transaction.amount,
                     'location': transaction.location
                 })
             
-            enriched = self.enrichment_processor.enrich(transaction, user_profile)
-            alerts = self.rules_engine.check_all_rules(enriched)
+            enriched = self.enrichment_processor.enrich(transaction, user_profile, user_history)
+            rule_alerts = self.rules_engine.check_all_rules(enriched)
+            ml_prediction = self.ml_predictor.predict(enriched)
+            enriched['ml_prediction'] = ml_prediction
+            alerts = self._combine_risk_scores(enriched, rule_alerts, ml_prediction)
             self.metrics['transactions_processed'] += 1
             
             if alerts:
@@ -186,6 +192,41 @@ class FraudDetector:
             self.metrics['errors'] += 1
             return []
     
+
+    def _combine_risk_scores(self, enriched, rule_alerts, ml_prediction):
+        transaction = enriched["transaction"]
+        severity_weight = {"CRITICAL": 50, "HIGH": 35, "MEDIUM": 25, "LOW": 10}
+        rule_score = min(sum(severity_weight.get(alert.severity, 10) for alert in rule_alerts), 100)
+        weighted_score = int(round((rule_score * 0.45) + (ml_prediction.risk_score * 0.55)))
+        combined_score = max(weighted_score, ml_prediction.risk_score if self.ml_predictor.is_fraud(ml_prediction) else weighted_score)
+        alerts = list(rule_alerts)
+
+        if self.ml_predictor.is_fraud(ml_prediction):
+            severity = "CRITICAL" if combined_score >= 90 else "HIGH" if combined_score >= 70 else "MEDIUM"
+            alert = FraudAlert(
+                transaction_id=transaction.transaction_id,
+                user_id=transaction.user_id,
+                alert_type="ML_FRAUD_PREDICTION",
+                severity=severity,
+                description=(
+                    f"ML fraud probability {ml_prediction.fraud_probability:.2%}; "
+                    f"combined risk score {combined_score}/100"
+                ),
+                transaction_details=(
+                    f"model={ml_prediction.model_name}; version={ml_prediction.model_version}; "
+                    f"rule_score={rule_score}; ml_score={ml_prediction.risk_score}; "
+                    f"combined_score={combined_score}; features={ml_prediction.features}"
+                )
+            )
+            alerts.append(alert)
+
+        logger.info(
+            f"COMBINED RISK SCORE | transaction_id={transaction.transaction_id} | "
+            f"rule_score={rule_score} | ml_score={ml_prediction.risk_score} | "
+            f"combined_score={combined_score}"
+        )
+        return alerts
+
     def process_user_profile(self, profile_data: bytes):
         try:
             records = self.profile_serializer.deserialize(profile_data)

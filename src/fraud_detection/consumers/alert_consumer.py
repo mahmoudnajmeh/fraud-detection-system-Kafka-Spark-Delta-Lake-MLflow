@@ -120,7 +120,7 @@ class AlertConsumer:
         
         if self.type_counts:
             summary.append("\nAlert Types:\n", style="bold yellow")
-            for alert_type, count in sorted(self.type_counts.items(), key=lambda x: x[1], reverse=True)[:5]:
+            for alert_type, count in sorted(self.type_counts.items(), key=lambda x: x[1], reverse=True)[:8]:
                 summary.append(f"  • {alert_type}: {count}\n")
         
         return summary
@@ -130,8 +130,8 @@ class AlertConsumer:
         table = Table(show_header=True, header_style="bold magenta")
         table.add_column("Time", width=10, style="cyan")
         table.add_column("Severity", width=10)
-        table.add_column("Type", width=18)
-        table.add_column("Description", width=50)
+        table.add_column("Type", width=22)
+        table.add_column("Description", width=58)
         
         if not self.recent_alerts:
             table.add_row("", "", "", "No alerts yet...")
@@ -147,8 +147,8 @@ class AlertConsumer:
             }.get(severity, severity)
             
             description = alert['description']
-            if len(description) > 47:
-                description = description[:47] + "..."
+            if len(description) > 55:
+                description = description[:55] + "..."
             
             table.add_row(
                 alert['display_time'],
