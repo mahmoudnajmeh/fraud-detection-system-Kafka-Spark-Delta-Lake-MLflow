@@ -1,4 +1,4 @@
-# 🚨 Fraud Detection System
+# 🚨 Fraud Detection Platform (Kafka, Spark, Delta Lake, MLflow)
 
 
 A real-time fraud detection platform built with Apache Kafka, Spark Structured Streaming, Random Forest machine learning, Delta Lake, and hybrid rule-based fraud scoring.
