@@ -143,7 +143,7 @@ The following architecture illustrates the complete machine learning lifecycle, 
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/MN10101/fraud-detection-system-kafak.git
+git clone https://github.com/mahmoudnajmeh/fraud-detection-system-Kafka-Spark-Delta-Lake-MLflow.git
 cd fraud-detection-system-kafka
 
 # 2. Install dependencies using uv
