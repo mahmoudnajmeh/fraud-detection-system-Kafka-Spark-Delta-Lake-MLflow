@@ -1,7 +1,7 @@
 # 🚨 Fraud Detection System
 
 
-A fraud detection system built with Apache Kafka, featuring dual-format messaging (Avro + JSON), stateful stream processing, and a rich terminal-based monitoring UI.
+A real-time fraud detection platform built with Apache Kafka, Spark Structured Streaming, Random Forest machine learning, Delta Lake, and hybrid rule-based fraud scoring.
 
 
 ## Author
@@ -64,38 +64,47 @@ The Fraud Detection System processes e-commerce transactions in real-time, combi
 ## 🏗 Architecture
 
 
-### Hybrid Fraud Scoring Flow
+### Machine Learning Pipeline
 
 ```text
-Transaction
-      |
-      v
-Kafka Producer
-      |
-      v
-Kafka Topic
-      |
-      v
-Spark Structured Streaming / Fraud Detector
-      |
-      +-- Rule-based fraud detection
-      |
-      +-- ML fraud prediction (Random Forest)
-      |
-      v
-Combined Risk Score
-      |
-      v
-Kafka Alerts
-      |
-      v
-Delta Lake
-      |
-      v
-Dashboard
+                 Historical Transactions
+                         │
+                         ▼
+                 Feature Engineering
+                         │
+                         ▼
+             Random Forest Model Training
+                         │
+                         ▼
+                Model Serialization (.pkl)
+                         │
+                         ▼
+                 ML Fraud Predictor
+                         │
+            ┌────────────┴────────────┐
+            ▼                         ▼
+     Fraud Probability         Rule Risk Score
+            │                         │
+            └────────────┬────────────┘
+                         ▼
+               Combined Risk Score
+                         │
+                         ▼
+                 Kafka Fraud Alert
+                         │
+                         ▼
+                     Dashboard
 ```
 
 The fraud detector enriches each transaction with user profile and transaction history, applies deterministic rules, calculates an ML fraud probability, merges both signals into a combined risk score, publishes alerts back to Kafka and stores alert events in Delta Lake.
+
+### Machine Learning Workflow
+
+The following architecture illustrates the complete machine learning lifecycle, including offline model training, feature engineering, model serialization, and real-time inference integrated with the streaming fraud detection pipeline.
+
+### Machine Learning Architecture
+
+<img width="1536" height="1024" alt="Image" src="https://github.com/user-attachments/assets/15c07caf-016c-4980-b3b5-4c4b0c37de2e" />
 
 ### System Architecture Diagram
 
@@ -324,6 +333,6 @@ pytest tests/ -v --cov=src/fraud_detection --cov-report=html
 pytest tests/test_fraud_detection.py -v
 ```
 
-<img width="1505" height="515" alt="Test Results" src="https://github.com/user-attachments/assets/750718a8-6534-4c56-8df5-c9c5f05ab0ce" />
+<img width="1503" height="327" alt="Image" src="https://github.com/user-attachments/assets/e2acdd0c-d108-41c6-99f9-82d88f6186aa" />
 
 
