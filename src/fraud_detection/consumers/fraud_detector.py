@@ -12,7 +12,7 @@ from threading import Lock
 from pathlib import Path
 from loguru import logger
 
-sys.path.append(str(Path(__file__).parent.parent.parent.parent))
+
 
 from fraud_detection.config.settings import settings
 from fraud_detection.config.logger_config import logger
@@ -25,6 +25,8 @@ from fraud_detection.processors.ml_fraud_predictor import MLFraudPredictor
 from delta.tables import DeltaTable
 from pyspark.sql import SparkSession, functions as F
 from delta import configure_spark_with_delta_pip
+
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 
 class FraudDetector:
