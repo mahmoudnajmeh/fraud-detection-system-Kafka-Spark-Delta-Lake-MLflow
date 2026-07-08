@@ -7,9 +7,9 @@ from datetime import datetime
 import sys
 from loguru import logger
 
-sys.path.append(str(Path(__file__).parent.parent.parent.parent))
-
 from fraud_detection.config.settings import settings
+
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 class AuditConsumer:
     """Consumer that logs all events for audit compliance."""
