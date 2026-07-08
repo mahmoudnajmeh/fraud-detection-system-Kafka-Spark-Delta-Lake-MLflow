@@ -15,11 +15,12 @@ import signal
 from pathlib import Path
 from loguru import logger
 
-sys.path.append(str(Path(__file__).parent.parent.parent.parent))
-
 from fraud_detection.config.settings import settings
 from fraud_detection.config.logger_config import logger
 from fraud_detection.utils.avro_serializer import AvroSerializer
+
+
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 console = Console()
 
