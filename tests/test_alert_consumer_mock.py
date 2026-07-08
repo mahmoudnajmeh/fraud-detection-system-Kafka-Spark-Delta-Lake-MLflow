@@ -4,14 +4,13 @@ from unittest.mock import patch, MagicMock
 @pytest.fixture(autouse=True)
 def cleanup():
     yield
-    # Force cleanup after test
 
 @patch('fraud_detection.consumers.alert_consumer.Consumer')
 @patch('fraud_detection.consumers.alert_consumer.AvroSerializer')
 def test_alert_consumer_init(mock_avro, mock_consumer):
     from fraud_detection.consumers.alert_consumer import AlertConsumer
     consumer = AlertConsumer()
-    consumer.running = False  # Stop any loops
+    consumer.running = False 
     assert consumer.alert_count == 0
 
 @patch('fraud_detection.consumers.alert_consumer.Consumer')

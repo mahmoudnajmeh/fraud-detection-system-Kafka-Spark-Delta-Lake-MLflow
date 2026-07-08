@@ -12,12 +12,12 @@ from loguru import logger
 import sys
 import os
 
-sys.path.append(str(Path(__file__).parent.parent.parent.parent))
-
 from fraud_detection.config.settings import settings
 from fraud_detection.config.logger_config import logger
 from fraud_detection.models.data_models import Transaction
 from fraud_detection.utils.avro_serializer import AvroSerializer
+
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 class TransactionProducer:
     """Producer for transaction events - Avro for production, JSON for UI."""
@@ -69,7 +69,6 @@ class TransactionProducer:
             replication_factor=1
         )
         
-        # Also ensure readable-json topic exists
         json_topic = NewTopic(
             "transactions-readable",
             num_partitions=5,
@@ -132,7 +131,6 @@ class TransactionProducer:
     def send_transaction(self, transaction: Transaction):
         """Send a single transaction to Kafka - Avro (production) + JSON (readable)."""
         try:
-            # 1. Send Avro (production format - smaller, faster)
             avro_bytes = self.avro_serializer.serialize_one(transaction.to_avro_dict())
             
             self.producer.produce(
@@ -146,7 +144,6 @@ class TransactionProducer:
                 }
             )
             
-            # 2. ALSO send JSON (readable for Kafka UI)
             json_bytes = json.dumps(transaction.to_avro_dict(), default=str).encode('utf-8')
             
             self.producer.produce(

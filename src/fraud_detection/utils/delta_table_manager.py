@@ -70,7 +70,6 @@ class DeltaTableManager:
     
     def vacuum(self, retention_hours: int = 168):
         """Physically remove old files."""
-        # Disable safety check (needed for <7 days retention)
         self.spark.conf.set("spark.databricks.delta.retentionDurationCheck.enabled", "false")
         delta_table = DeltaTable.forPath(self.spark, self.transactions_table_path)
         delta_table.vacuum(retentionHours=retention_hours)

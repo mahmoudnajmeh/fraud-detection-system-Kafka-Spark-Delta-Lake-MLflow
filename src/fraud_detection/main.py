@@ -7,13 +7,14 @@ from pathlib import Path
 from multiprocessing import Process
 import click
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 from fraud_detection.config.logger_config import logger
 from fraud_detection.producers.transaction_producer import TransactionProducer
 from fraud_detection.producers.user_profile_producer import UserProfileProducer
 from fraud_detection.consumers.fraud_detector import FraudDetector
 from fraud_detection.consumers.alert_consumer import AlertConsumer
+
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 @click.group()

@@ -3,9 +3,9 @@ from unittest.mock import patch, MagicMock
 from pathlib import Path
 import sys
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 from fraud_detection.models.data_models import Transaction
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 class TestTransactionProducer:
     

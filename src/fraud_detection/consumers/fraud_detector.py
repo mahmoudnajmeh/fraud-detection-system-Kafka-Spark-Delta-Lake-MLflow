@@ -12,8 +12,11 @@ from threading import Lock
 from pathlib import Path
 from loguru import logger
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 627d3ae (refactor: eliminate sys.path hacks in favor of standard package imports)
 from fraud_detection.config.settings import settings
 from fraud_detection.config.logger_config import logger
 from fraud_detection.models.data_models import FraudAlert, Transaction

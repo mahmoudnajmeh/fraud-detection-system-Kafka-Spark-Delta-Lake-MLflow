@@ -19,7 +19,10 @@ from fraud_detection.config.settings import settings
 from fraud_detection.config.logger_config import logger
 from fraud_detection.utils.avro_serializer import AvroSerializer
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 627d3ae (refactor: eliminate sys.path hacks in favor of standard package imports)
 sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 console = Console()

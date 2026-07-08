@@ -4,11 +4,11 @@ from pathlib import Path
 import sys
 from datetime import datetime
 
-sys.path.append(str(Path(__file__).parent.parent.parent.parent))
-
 from fraud_detection.config.logger_config import logger
 from fraud_detection.config.settings import settings
 from fraud_detection.utils.delta_table_manager import DeltaTableManager
+
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 class TimeTravelConsumer:
     """Consumer that uses Delta Lake time travel for auditing."""
@@ -39,7 +39,6 @@ class TimeTravelConsumer:
         
         df = self.manager.read_version(version_before_delete)
         
-        # Overwrite current table with old snapshot
         df.write.format("delta").mode("overwrite").save(
             self.manager.transactions_table_path
         )
