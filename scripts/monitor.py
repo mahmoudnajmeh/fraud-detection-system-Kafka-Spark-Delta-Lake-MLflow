@@ -10,10 +10,9 @@ from rich.panel import Panel
 from rich.text import Text
 import psutil
 import sys
+from fraud_detection.config.settings import settings
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from fraud_detection.config.settings import settings
 
 console = Console()
 
